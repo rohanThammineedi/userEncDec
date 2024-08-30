@@ -5,6 +5,7 @@ import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Component;
 
 import javax.crypto.Cipher;
+import java.nio.charset.StandardCharsets;
 import java.security.*;
 import java.util.Base64;
 import java.util.regex.Pattern;
@@ -45,20 +46,18 @@ public class KeyUtils {
     }
 
     public String decrypt(String encryptedData) {
-        if (encryptedData == null || encryptedData.isEmpty()) {
-            throw new RuntimeException("Encrypted data cannot be null or empty");
-        }
-        if (!isBase64(encryptedData)) {
-            throw new RuntimeException("Encrypted data is not in base64 format");
-        }
         try {
+            log.info("Received encrypted data: {}", encryptedData);
             byte[] decodedData = Base64.getDecoder().decode(encryptedData);
             Cipher cipher = Cipher.getInstance(RSA);
             cipher.init(Cipher.DECRYPT_MODE, privateKey);
             byte[] decryptedData = cipher.doFinal(decodedData);
-            return new String(decryptedData);
+            String decryptedString = new String(decryptedData, StandardCharsets.UTF_8);
+            log.info("Decrypted data: {}", decryptedString);
+            return decryptedString;
         } catch (Exception e) {
-            throw new RuntimeException("Failed to decrypt data", e);
+            log.error("Decryption error: {}", e.getMessage());
+            throw new RuntimeException(e);
         }
     }
 

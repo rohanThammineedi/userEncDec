@@ -61,7 +61,7 @@ public class UserService {
     public UserResponseDTO updateUser(UserRequestDTO userRequestDTO, Long id) {
         UserEntity userEntity = userRepository.findById(id).orElseThrow(() -> new UserGlobalException("User not found"));
         userEntity.setUsername(userRequestDTO.getUsername());
-        userEntity.setPassword(userRequestDTO.getPassword());
+//        userEntity.setPassword(userRequestDTO.getPassword());
         userEntity.setEmail(userRequestDTO.getEmail());
         userEntity.setRoles(userRequestDTO.getRoles());
         UserEntity updated = null;

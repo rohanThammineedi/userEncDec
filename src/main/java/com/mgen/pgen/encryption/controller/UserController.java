@@ -1,5 +1,6 @@
 package com.mgen.pgen.encryption.controller;
 
+import com.fasterxml.jackson.databind.ObjectMapper;
 import com.mgen.pgen.encryption.data.dto.UserApplicationResponse;
 import com.mgen.pgen.encryption.data.dto.UserRequestDTO;
 import com.mgen.pgen.encryption.data.dto.UserResponseDTO;
@@ -13,6 +14,7 @@ import org.springframework.web.bind.annotation.*;
 
 import java.util.Base64;
 import java.util.List;
+import java.util.Map;
 
 @RestController
 @RequestMapping("/user")
@@ -32,7 +34,13 @@ public class UserController {
     public UserApplicationResponse<UserResponseDTO> saveUser(@RequestBody @Valid UserRequestDTO userRequestDTO) {
         log.info("Received request: {}", userRequestDTO);
         try {
-            String decryptedPassword = keyUtils.decrypt(userRequestDTO.getEncryptedPassword());
+            String decryptedData = keyUtils.decrypt(userRequestDTO.getEncryptedPassword());
+
+            // Parse the JSON and extract the password
+            ObjectMapper objectMapper = new ObjectMapper();
+            Map<String, String> decryptedMap = objectMapper.readValue(decryptedData, Map.class);
+            String decryptedPassword = decryptedMap.get("data");
+
             userRequestDTO.setPassword(decryptedPassword);
         } catch (Exception e) {
             log.error("Error during decryption: {}", e.getMessage());
@@ -43,6 +51,7 @@ public class UserController {
         log.info("User saved: {}", saved);
         return userApplicationResponse;
     }
+
 
     @PutMapping("/update/{id}")
     public UserApplicationResponse<UserResponseDTO> updateUser(@RequestBody @Valid UserRequestDTO userRequestDTO, @PathVariable Long id) {
