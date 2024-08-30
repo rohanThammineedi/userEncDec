@@ -7,6 +7,7 @@ import org.springframework.stereotype.Service;
 import org.springframework.web.client.RestTemplate;
 
 import javax.crypto.Cipher;
+import java.nio.charset.StandardCharsets;
 import java.security.KeyFactory;
 import java.security.PublicKey;
 import java.security.spec.X509EncodedKeySpec;
@@ -44,13 +45,17 @@ public class EncryptKeyService {
 
     public String encrypt(String data) {
         try {
+            log.info("Original data to encrypt: {}", data);
             Cipher cipher = Cipher.getInstance(RSA);
             cipher.init(Cipher.ENCRYPT_MODE, PUBLIC_KEY);
-            byte[] encryptedData = cipher.doFinal(data.getBytes());
-            return Base64.getEncoder().encodeToString(encryptedData);
+            byte[] encryptedData = cipher.doFinal(data.getBytes(StandardCharsets.UTF_8));
+            String encodedData = Base64.getEncoder().encodeToString(encryptedData);
+            log.info("Encrypted and Base64 encoded data: {}", encodedData);
+            return encodedData;
         } catch (Exception e) {
-            log.error("ERROR : {}", e.getMessage());
+            log.error("Encryption error: {}", e.getMessage());
             throw new RuntimeException(e);
         }
     }
+
 }
