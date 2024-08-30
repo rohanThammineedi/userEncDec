@@ -1,0 +1,27 @@
+spring:
+  datasource:
+    url: jdbc:postgresql://localhost:5432/encryption
+    username: postgres
+    password: admin
+    driver-class-name: org.postgresql.Driver
+  jpa:
+    database-platform: org.hibernate.dialect.PostgreSQLDialect
+    hibernate:
+      ddl-auto: update
+  output:
+    ansi:
+      enabled: ALWAYS
+
+logging:
+  level:
+    root: INFO
+    org.springframework.web: INFO
+    org.springframework.data: INFO
+    org.springframework.jdbc.datasource.init.ScriptUtils: DEBUG
+    org.springframework.security: DEBUG
+    com.mgen.pgen.encryption: DEBUG
+  pattern:
+    level: "%clr(%5p) %clr([%t])"
+
+
+
