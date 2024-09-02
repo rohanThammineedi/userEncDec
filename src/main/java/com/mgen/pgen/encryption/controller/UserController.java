@@ -44,6 +44,7 @@ public class UserController {
             userRequestDTO.setPassword(decryptedPassword);
         } catch (Exception e) {
             log.error("Error during decryption: {}", e.getMessage());
+            throw new UserGlobalException("Failed to decrypt password");
         }
         UserApplicationResponse<UserResponseDTO> userApplicationResponse = new UserApplicationResponse<>();
         UserResponseDTO saved = userService.saveUser(userRequestDTO);

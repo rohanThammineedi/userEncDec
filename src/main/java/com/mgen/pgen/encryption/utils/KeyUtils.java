@@ -2,6 +2,7 @@ package com.mgen.pgen.encryption.utils;
 
 import jakarta.annotation.PostConstruct;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.stereotype.Component;
 
 import javax.crypto.Cipher;
@@ -26,13 +27,25 @@ public class KeyUtils {
 
     @PostConstruct
     public void init() {
+//        KeyPair keyPair = generateKeyPair();
+//        this.publicKey = keyPair.getPublic();
+//        this.privateKey = keyPair.getPrivate();
+//
+//        log.info("PUBLIC KEY GENERATED : {}", publicKey);
+//        log.info("=============================================================================");
+//        log.info("PRIVATE KEY GENERATED : {}", privateKey);
+
+        rotateKeys();
+    }
+
+//    @Scheduled(fixedRate = 300000)
+    public void rotateKeys() {
         KeyPair keyPair = generateKeyPair();
         this.publicKey = keyPair.getPublic();
         this.privateKey = keyPair.getPrivate();
-
-        log.info("PUBLIC KEY GENERATED : {}", publicKey);
+        log.info("PUBLIC KEY ROTATED : {}", publicKey);
         log.info("=============================================================================");
-        log.info("PRIVATE KEY GENERATED : {}", privateKey);
+        log.info("PRIVATE KEY ROTATED : {}", privateKey);
     }
 
     private KeyPair generateKeyPair() {
